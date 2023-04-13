@@ -15,12 +15,6 @@ I'm not resposible for anything that may go wrong with:
 
 ***Hold your own beer!
 
-## Build
-
-    git clone https://gitlab.com/AuroraOSS/gplayapi.git
-    gradlew :assemble
-    gradlew :build
-
 ## Work Flow
  1. Obtain AASToken from (Email,Password) pair.
  2.  Obtain AuthData from (Email,AASToken) pair.
