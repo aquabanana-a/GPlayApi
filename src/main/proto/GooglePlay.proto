@@ -1904,6 +1904,16 @@ message UserProfile {
   optional string profileDescription = 22;
 }
 
+message VafInfo {
+  optional string description = 1;
+  optional int32 someType = 2;
+  optional int32 someField = 3;
+}
+
+message AddReviewRequest {
+  repeated VafInfo info = 1;
+}
+
 message ReviewResponse {
   optional GetReviewsResponse userReviewsResponse = 1;
   optional string nextPageUrl = 2;

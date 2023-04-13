@@ -15,9 +15,12 @@
 
 package com.aurora.gplayapi.helpers
 
+import com.aurora.gplayapi.AddReviewRequest
 import com.aurora.gplayapi.GooglePlayApi
 import com.aurora.gplayapi.ReviewResponse
+import com.aurora.gplayapi.VafInfo
 import com.aurora.gplayapi.data.builders.ReviewBuilder
+import com.aurora.gplayapi.data.models.App
 import com.aurora.gplayapi.data.models.AuthData
 import com.aurora.gplayapi.data.models.Review
 import com.aurora.gplayapi.data.models.ReviewCluster
@@ -66,7 +69,22 @@ class ReviewsHelper(authData: AuthData) : BaseHelper(authData) {
 
     @Throws(Exception::class)
     private fun postReviewResponse(params: Map<String, String>, headers: Map<String, String>): ReviewResponse? {
-        val playResponse = httpClient.post(GooglePlayApi.URL_REVIEW_ADD_EDIT, headers, params)
+        val urlParams = "?" + params.map { it.key + "=" + it.value }.joinToString("&")
+
+        val request = AddReviewRequest.newBuilder()
+            .addInfo(VafInfo.newBuilder()
+                .setDescription("vaf_never_display_ads_experience")
+                .setSomeType(4)
+                .setSomeField(0)
+                .build())
+            .addInfo(VafInfo.newBuilder()
+                .setDescription("vaf_never_display_ease_of_use")
+                .setSomeType(4)
+                .setSomeField(0)
+                .build())
+            .build().toByteArray()
+
+        val playResponse = httpClient.post(GooglePlayApi.URL_REVIEW_ADD_EDIT + urlParams, headers, request)
         val payload = getPayLoadFromBytes(playResponse.responseBytes)
         return if (payload.hasReviewResponse()) payload.reviewResponse else null
     }
@@ -145,8 +163,10 @@ class ReviewsHelper(authData: AuthData) : BaseHelper(authData) {
         params["title"] = title
         params["content"] = content
         params["rating"] = rating.toString()
-        params["rst"] = "3"
+        params["ipr"] = "true"
         params["itpr"] = if (isBeta) "true" else "false"
+        params["rst"] = "3"
+        params["dff"] = "1"
 
         val headers: MutableMap<String, String> = getDefaultHeaders(authData)
         val reviewResponse = postReviewResponse(params, headers)

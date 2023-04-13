@@ -51,6 +51,8 @@ dependencies {
 sourceSets {
     main.kotlin.srcDirs += "src/main/java"
     main.kotlin.srcDirs += "build/generated/source/proto/main/java"
+
+    main.java.srcDirs += "build/generated/source/proto/main/java"
 }
 
 tasks.withType(JavaCompile) {
